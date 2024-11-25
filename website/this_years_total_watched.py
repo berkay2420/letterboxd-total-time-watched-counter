@@ -16,7 +16,6 @@ configure()
 API_KEY = os.getenv("API_KEY")
 BASE_URL = "http://www.omdbapi.com/"
 
-
 def get_movie_names(user_name):
     
   options = Options()
@@ -75,10 +74,7 @@ def get_movie_names(user_name):
     older_button.click()
     time.sleep(1)
     new_movies_table = get_movies_table()
-    # try:
-    #   print(len(new_movies_table))
-    # except:
-    #   print("An exception occurred")
+
     for i in range(1,len(new_movies_table) + 1):
       movie_name = get_movie_name(i)
       watched_movies.append(movie_name)
