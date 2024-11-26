@@ -19,7 +19,7 @@ BASE_URL = "http://www.omdbapi.com/"
 def get_movie_names(user_name):
     
   options = Options()
-  #options.add_argument("--headless")
+  options.add_argument("--headless")
   driver = webdriver.Chrome(options=options)
   watched_movies = []
 
@@ -29,7 +29,7 @@ def get_movie_names(user_name):
 
   year_selection_button = driver.find_element(By.XPATH, '//*[@id="content-nav"]/div[1]/section[6]/div')
   button_2024 = driver.find_element(By.XPATH, '//*[@id="html"]/body/ul[6]/li[3]/a')
-
+  
 
   def get_movie_name(i):
     element = WebDriverWait(driver, 10).until(
@@ -65,7 +65,19 @@ def get_movie_names(user_name):
     older_button.click()
     time.sleep(1)
 
-
+  def get_page_numbers():
+    page_numbers = driver.find_elements(By.XPATH, '//*[@id="content"]/div/section[2]/div[2]/div[3]/ul/li')
+    
+    return len(page_numbers) - 1
+  
+  def check_page_numbers():
+    try:
+        
+        page_numbers = driver.find_elements(By.XPATH, '//*[@id="content"]/div/section[2]/div[2]/div[3]/ul/li')
+        
+        return True
+    except NoSuchElementException:
+        return False
   year_selection_button.click()
   time.sleep(1)
   button_2024.click()
@@ -77,18 +89,15 @@ def get_movie_names(user_name):
 
   time.sleep(1)
 
-  if check_older_button():
-    click_older_button_and_wait()
-    new_movies_table = get_movies_table()
-    append_movies(new_movies_table)
-    if check_older_button():
-      click_older_button_and_wait()
-      new_movies_table2 = get_movies_table()
-      append_movies(new_movies_table2)
+  if check_page_numbers:
+    number_of_pages = get_page_numbers()
+    index = 0
+    while index < number_of_pages: 
       if check_older_button():
         click_older_button_and_wait()
-        new_movies_table3 = get_movies_table()
-        append_movies(new_movies_table3)
+        new_movies_table = get_movies_table()
+        append_movies(new_movies_table)
+        index += 1
 
   driver.quit()
   return watched_movies
@@ -110,9 +119,15 @@ def get_total_time(watched_movies):
       data = response.json()
       runtime = data.get("Runtime")
       run_times_list.append(runtime)
-      if runtime and "min" in runtime:  
-          runtime = int(runtime.split(" ")[0])  
-          total_minutes += runtime
+      if runtime:
+          try:
+            if "min" in runtime:  
+              runtime = int(runtime.split(" ")[0])  
+              total_minutes += runtime
+          except ValueError:  
+                    print(f"Geçersiz runtime değeri: {runtime}. Bu öğe atlanıyor.")
+                    print(f"Invalid items index: {run_times_list.index(runtime)}")
+                    continue
     else:
       print("API isteği başarısız oldu. Durum kodu:", response.status_code)
 

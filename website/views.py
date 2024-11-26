@@ -32,10 +32,11 @@ def info_page():
   total_minutes, total_hours, total_minutes_by_hours, run_times_list, = get_total_time(watched_movies)
   
   movie_list = zip(watched_movies, run_times_list)
-  
+  total_number_of_watched_movies = len(watched_movies)
   return render_template('info_show.html',
                          user_name=user_name, 
                           total_minutes=total_minutes, 
                           total_hours=total_hours, 
                           total_minutes_by_hour=total_minutes_by_hours,
-                          movie_list=movie_list)
+                          movie_list=movie_list,
+                          total_number_of_watched_movies=total_number_of_watched_movies)
