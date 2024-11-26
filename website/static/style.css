@@ -1,113 +1,99 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
 body {
- font-family: 'Roboto', sans-serif;
- background-size: cover;
- background-position: center;
- margin: 0;
- padding: 0;
- display: flex;
- justify-content: center;
- align-items: center;
- height: 100vh;
- color: #333;
-}
-
-.container {
- max-width: 600px;
- background-color: rgba(255, 255, 255, 0.95);
- padding: 30px;
- border-radius: 12px;
- box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
- transition: transform 0.3s ease-in-out;
-}
-
-.container:hover {
- transform: translateY(-10px);
-}
-
-h1 {
- text-align: center;
- font-size: 2.5rem;
- margin-bottom: 20px;
-}
-
-input[type="text"] {
- width: calc(100% - 80px);
- padding: 12px;
- margin-bottom: 10px;
- border-radius: 4px;
-}
-
-button {
- padding: 12px 24px;
- background-color: #007bff;
- color: #fff;
- border: none;
- border-radius: 4px;
- cursor: pointer;
- transition: background-color 0.3s, transform 0.3s;
-}
-
-button:hover {
- background-color: #0056b3;
- transform: scale(1.05);
-}
-
-#weatherInfo {
- background-color: #06283d; /* Dark blue background */
- color: #f0f0f0; /* Light text color */
- padding: 20px;
- border-radius: 18px;
- margin-top: 20px;
- transition: transform 0.3s ease-in-out;
-}
-
-#weatherInfo:hover {
- transform: translateY(-10px);
-}
-
-#weatherInfo h2 {
- font-size: 24px;
- font-weight: 500;
- color: #e35519; /* Orange accent for the city name */
-}
-
-#weatherInfo p {
- font-size: 18px;
- font-weight: 400;
-}
-
-#weatherInfo button {
- background-color: #e35519; /* Orange background for buttons */
- color: "black";
- border: none;
- border-radius: 50%;
- padding: 10px 20px;
- cursor: pointer;
- transition: background-color 0.3s, transform 0.3s;
-}
-
-#weatherInfo button:hover {
- background-color: #e8dad1; /* Slightly lighter orange on hover */
- transform: scale(1.05);
-}
-
-.weather-overview {
- display: flex;
- flex-direction: column;
- align-items: center;
-}
-
-.weather-details {
- display: flex;
- justify-content: space-around;
- width: 100%;
- margin-top: 10px;
-}
-
-.weather-condition, .weather-temperature {
-    color: black;
-
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
     text-align: center;
-}
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+  }
+  
+  .form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .input-group {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .input-group input,
+  .input-group button {
+    flex: 1;
+  }
+  
+  .btn-primary {
+    background-color: #e50914;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: #c41100;
+  }
+  
+  .info-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .detail-item {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .movie-list-container {
+    background-color: #fafafa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .movie-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .movie-item {
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.025);
+  }

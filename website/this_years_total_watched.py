@@ -19,7 +19,7 @@ BASE_URL = "http://www.omdbapi.com/"
 def get_movie_names(user_name):
     
   options = Options()
-  options.add_argument("--headless")
+  #options.add_argument("--headless")
   driver = webdriver.Chrome(options=options)
   watched_movies = []
 
@@ -41,6 +41,11 @@ def get_movie_names(user_name):
   def get_movies_table():
     movies_table = driver.find_elements(By.XPATH, '//*[@id="diary-table"]/tbody/tr')
     return movies_table
+  
+  def append_movies(table):
+    for i in range(1,len(table) + 1):
+      movie_name = get_movie_name(i)
+      watched_movies.append(movie_name)
 
   def check_older_button():
     try:
@@ -54,35 +59,44 @@ def get_movie_names(user_name):
   def get_older_button():
     older_button = driver.find_element(By.XPATH, '//*[@id="content"]/div/section[2]/div[2]/div[2]/a')
     return older_button
+  
+  def click_older_button_and_wait():
+    older_button = get_older_button()
+    older_button.click()
+    time.sleep(1)
+
 
   year_selection_button.click()
   time.sleep(1)
   button_2024.click()
   time.sleep(1)
+
   movies_table = get_movies_table()
 
-  for i in range(1,len(movies_table) + 1):
-    movie_name = get_movie_name(i)
-    watched_movies.append(movie_name)
+  append_movies(movies_table)
 
   time.sleep(1)
 
-
-
   if check_older_button():
-    older_button = get_older_button()
-    older_button.click()
-    time.sleep(1)
+    click_older_button_and_wait()
     new_movies_table = get_movies_table()
-
-    for i in range(1,len(new_movies_table) + 1):
-      movie_name = get_movie_name(i)
-      watched_movies.append(movie_name)
+    append_movies(new_movies_table)
+    if check_older_button():
+      click_older_button_and_wait()
+      new_movies_table2 = get_movies_table()
+      append_movies(new_movies_table2)
+      if check_older_button():
+        click_older_button_and_wait()
+        new_movies_table3 = get_movies_table()
+        append_movies(new_movies_table3)
 
   driver.quit()
   return watched_movies
-  
+
+
 run_times_list = []
+
+
 def get_total_time(watched_movies):
   total_minutes = 0
   for movie in watched_movies:
@@ -104,7 +118,7 @@ def get_total_time(watched_movies):
 
   total_hours = total_minutes // 60
   total_minutes_by_hours = total_minutes % 60
-  return total_minutes, total_hours, total_minutes_by_hours, run_times_list
+  return total_minutes, total_hours, total_minutes_by_hours, run_times_list,
 
 
 
