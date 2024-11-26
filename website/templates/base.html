@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="container mt-5">
-    <h1 class="text-center mb-4 ">Calculate Total Watched Hours</h1>
+    <h1 class="text-center mb-4 ">Letterboxd 2024 Total Time Watched Calculator</h1>
     <form action="/total_watched_info" method="post" class="form-container">
       <div class="input-group mb-3 ">
         <input type="text" name="user_name" class="form-control" placeholder="Username..." required>
@@ -22,13 +22,19 @@
         <h2 class="text-center">{{ user_name }}'s Total Watched Info For 2024</h2>
         <div class="details">
           <div class="detail-item">
-            <h2>Total {{total_minutes}} Minutes</h2>
+              <h2>In 2024 {{user_name}} Watched {{total_number_of_watched_movies}} Movies</h2>
+            </div>
+          <div class="detail-item">
+            <h2> A Total of <span>{{total_minutes}}</span> Minutes  </h2>
           </div>
           <div class="detail-item">
-            <h2>Total {{ total_hours }} hours and {{total_minutes_by_hour}} minutes</h2>
+            <h2>The total runtime is {{total_hours}} hours and {{total_minutes_by_hour}} minutes</h2>
           </div>
           <div class="detail-item">
-            <h2>Total Watched Movie Count {{total_number_of_watched_movies}}</h2>
+            <h2>Average Runtime For a Movie was {{average_runtime_for_movie}}</h2>
+          </div>
+          <div class="detail-item">
+            <h2>The longest movie {{user_name}} watched in 2024 was {{longest_movie}}</h2>
           </div>
         </div>
         <div class="movie-list-container mt-4">

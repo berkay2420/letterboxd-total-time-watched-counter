@@ -130,10 +130,10 @@ def get_total_time(watched_movies):
                     continue
     else:
       print("API isteği başarısız oldu. Durum kodu:", response.status_code)
-
+  longest_runtime_index = run_times_list.index(run_times_list.max())
   total_hours = total_minutes // 60
   total_minutes_by_hours = total_minutes % 60
-  return total_minutes, total_hours, total_minutes_by_hours, run_times_list,
+  return total_minutes, total_hours, total_minutes_by_hours, run_times_list, longest_runtime_index
 
 
 
