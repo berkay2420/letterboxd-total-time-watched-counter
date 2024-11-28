@@ -39,10 +39,18 @@ def get_movie_names(user_name, year):
 
   year_selection_button = driver.find_element(By.XPATH, '//*[@id="content-nav"]/div[1]/section[6]/div')
 
+  def hide_tv_shows():
+    eye_button = driver.find_element(By.XPATH, '//*[@id="content-nav"]/div[1]/section[1]/div/label')
+    eye_button.click()
+    time.sleep(1)
+    select_hide_tv_shows = driver.find_element(By.XPATH, '//*[@id="hide-toggle-menu"]/li[3]/ul/li[4]/a')
+    select_hide_tv_shows.click()
+
   def selecet_year(year):
     year_button = driver.find_element(By.XPATH, years_and_paths[year])
     year_button.click()
   
+
 
   def get_movie_name(i):
     element = WebDriverWait(driver, 10).until(
@@ -115,7 +123,8 @@ def get_movie_names(user_name, year):
   time.sleep(1)
   selecet_year(year)
   time.sleep(1)
-
+  hide_tv_shows()
+  time.sleep(1)
   movies_table = get_movies_table()
 
   append_movies(movies_table)
@@ -186,7 +195,7 @@ def get_total_time(watched_movies, release_dates):
       runtime = data.get("Runtime")
       #print(f" {movie} {date} Runtime  From API: {runtime}")
       if runtime != "NA":
-        if runtime == None:
+        if runtime == None or "S" in str(runtime):
           runtime = 0
           run_times_list.append(runtime)
         else:
@@ -203,11 +212,10 @@ def get_total_time(watched_movies, release_dates):
     else:
       print("API isteği başarısız oldu. Durum kodu:", response.status_code)
 
-  longest_runtime_index = run_times_list.index(max(run_times_list))
   total_minutes = sum(run_times_list)
   total_hours = total_minutes // 60
   total_minutes_by_hours = total_minutes % 60
-  return total_minutes, total_hours, total_minutes_by_hours, run_times_list, longest_runtime_index
+  return total_minutes, total_hours, total_minutes_by_hours, run_times_list
 
 
 
