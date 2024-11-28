@@ -8,6 +8,8 @@ import requests
 from selenium.common.exceptions import NoSuchElementException
 from dotenv import load_dotenv
 import os
+from bs4 import BeautifulSoup
+
 
 def configure():
   load_dotenv()
@@ -17,9 +19,9 @@ API_KEY = os.getenv("API_KEY")
 BASE_URL = "http://www.omdbapi.com/"
 
 def get_movie_names(user_name):
-    
+
   options = Options()
-  options.add_argument("--headless")
+  #options.add_argument("--headless")
   driver = webdriver.Chrome(options=options)
   watched_movies = []
 
@@ -78,6 +80,7 @@ def get_movie_names(user_name):
         return True
     except NoSuchElementException:
         return False
+  
   year_selection_button.click()
   time.sleep(1)
   button_2024.click()
@@ -86,7 +89,6 @@ def get_movie_names(user_name):
   movies_table = get_movies_table()
 
   append_movies(movies_table)
-
   time.sleep(1)
 
   if check_page_numbers:
@@ -103,10 +105,36 @@ def get_movie_names(user_name):
   return watched_movies
 
 
-run_times_list = []
+
+  
+def get_runtime(movie_name):
+
+  options = Options()
+  #options.add_argument("--headless")
+  driver = webdriver.Chrome(options=options)
+  driver.get(f"https://letterboxd.com/film/{movie_name.lower()}/")
+  time.sleep(1)
+  runtime = WebDriverWait(driver, 10).until(
+      EC.presence_of_element_located((By.XPATH, '//*[@id="film-page-wrapper"]/div[2]/section[2]/p'))
+  )
+  runtime_html = runtime.get_attribute('outerHTML')
+  soup = BeautifulSoup(runtime_html, 'html.parser')
+  runtime_text = soup.find('p', class_='text-link text-footer').get_text()
+  runtime = "".join([char for char in runtime_text if char.isdigit()])
+  driver.quit()
+  return int(runtime)
+
+def get_runtimes_list(movie_list):
+  run_times_list = []
+  for movie in movie_list:
+    runtime = get_runtime(movie)
+    run_times_list.append(runtime)
+  return run_times_list
+     
 
 
 def get_total_time(watched_movies):
+  run_times_list = []
   total_minutes = 0
   for movie in watched_movies:
     params = {
@@ -114,23 +142,30 @@ def get_total_time(watched_movies):
       "t": movie,   
     }
     response = requests.get(BASE_URL, params=params)
-    
     if response.status_code == 200:  
       data = response.json()
       runtime = data.get("Runtime")
-      run_times_list.append(runtime)
-      if runtime:
+      print(f" {movie}Runtime  From API: {runtime}")
+      if runtime != "NA":
+        if runtime == None:
+          runtime = 0
+          run_times_list.append(runtime)
+        else:
           try:
             if "min" in runtime:  
               runtime = int(runtime.split(" ")[0])  
-              total_minutes += runtime
-          except ValueError:  
-                    print(f"Geçersiz runtime değeri: {runtime}. Bu öğe atlanıyor.")
-                    print(f"Invalid items index: {run_times_list.index(runtime)}")
-                    continue
+              run_times_list.append(runtime)
+          except ValueError:
+            print(f"Geçersiz runtime değeri: {runtime}. Bu öğe atlanıyor.")
+            continue
+      else:
+        runtime = 0
+        run_times_list.append(runtime)
     else:
       print("API isteği başarısız oldu. Durum kodu:", response.status_code)
-  longest_runtime_index = run_times_list.index(run_times_list.max())
+
+  longest_runtime_index = run_times_list.index(max(run_times_list))
+  total_minutes = sum(run_times_list)
   total_hours = total_minutes // 60
   total_minutes_by_hours = total_minutes % 60
   return total_minutes, total_hours, total_minutes_by_hours, run_times_list, longest_runtime_index

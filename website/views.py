@@ -29,18 +29,18 @@ def main_page():
 def info_page():
   user_name= request.form.get('user_name')
   watched_movies = get_movie_names(user_name)
-
-  total_minutes, total_hours, total_minutes_by_hours, run_times_list, longest_runtime_index= get_total_time(watched_movies)
-  average_runtime_for_movie = total_hours / len(run_times_list)
+  total_minutes, total_hours, total_minutes_by_hours, run_times_list, longest_runtime_index = get_total_time(watched_movies)
+  average_runtime_for_movie = round(total_hours / len(run_times_list), 2)
   longest_movie = watched_movies[longest_runtime_index]
-  movie_list = zip(watched_movies, run_times_list)
+  #movie_list = zip(watched_movies, run_times_list)
   total_number_of_watched_movies = len(watched_movies)
   return render_template('info_show.html',
                          user_name=user_name, 
                          total_minutes=total_minutes, 
                          total_hours=total_hours, 
                          total_minutes_by_hour=total_minutes_by_hours,
-                         movie_list=movie_list,
+                         run_times_list=run_times_list,
+                         #movie_list=movie_list,
                          longest_movie=longest_movie,
                          average_runtime_for_movie=average_runtime_for_movie,
                          total_number_of_watched_movies=total_number_of_watched_movies)

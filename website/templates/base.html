@@ -40,9 +40,9 @@
         <div class="movie-list-container mt-4">
           <h3 class="text-center">Watched Movies and Their Hours</h3>
           <ul class="movie-list list-group">
-            {% for name, run in movie_list %}
+            {% for runtime in run_times_list %}
               <li class="movie-item list-group-item">
-                <p>Name: {{name}} | Runtime: {{run}} </p>
+                <p>{{runtime}}</p>
               </li>
             {% endfor %}
           </ul>
