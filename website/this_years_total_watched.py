@@ -18,20 +18,30 @@ configure()
 API_KEY = os.getenv("API_KEY")
 BASE_URL = "http://www.omdbapi.com/"
 
-def get_movie_names(user_name):
+def get_movie_names(user_name, year):
 
   options = Options()
   options.add_argument("--headless")
   driver = webdriver.Chrome(options=options)
+
   watched_movies = []
   release_dates = []
 
+  years_and_paths = {
+    "2024": '//*[@id="html"]/body/ul[6]/li[3]/a',
+    "2023": '//*[@id="html"]/body/ul[6]/li[4]/a',
+    "2022": '//*[@id="html"]/body/ul[6]/li[5]/a',
+    "2021": '//*[@id="html"]/body/ul[6]/li[6]/a', 
+    "2020": '//*[@id="html"]/body/ul[6]/li[7]/a',
+  }
   driver.get(f"https://letterboxd.com/{user_name}/films/diary/")
   time.sleep(1)
 
-
   year_selection_button = driver.find_element(By.XPATH, '//*[@id="content-nav"]/div[1]/section[6]/div')
-  button_2024 = driver.find_element(By.XPATH, '//*[@id="html"]/body/ul[6]/li[3]/a')
+
+  def selecet_year(year):
+    year_button = driver.find_element(By.XPATH, years_and_paths[year])
+    year_button.click()
   
 
   def get_movie_name(i):
@@ -51,13 +61,17 @@ def get_movie_names(user_name):
       watched_movies.append(movie_name)
   
   def get_release_year(i):
-    element = WebDriverWait(driver, 10).until(
+    element = WebDriverWait(driver, 20).until(
     EC.presence_of_element_located((By.XPATH, f'//*[@id="diary-table"]/tbody/tr[{i}]/td[3]/div'))
     
     )
     date_html = element.get_attribute('outerHTML')
     soup = BeautifulSoup(date_html, 'html.parser')
-    release_year = soup.find('div', class_='film-poster')['data-film-release-year']
+    film_poster = soup.find('div', class_='film-poster')
+    release_year = film_poster.get('data-film-release-year', None)
+
+    if release_year==None:
+      release_year="0"
     return int(release_year)
   
   def append_dates(table):
@@ -99,7 +113,7 @@ def get_movie_names(user_name):
   
   year_selection_button.click()
   time.sleep(1)
-  button_2024.click()
+  selecet_year(year)
   time.sleep(1)
 
   movies_table = get_movies_table()
@@ -116,7 +130,7 @@ def get_movie_names(user_name):
         click_older_button_and_wait()
         new_movies_table = get_movies_table()
         append_movies(new_movies_table)
-        append_dates(movies_table)
+        append_dates(new_movies_table)
         index += 1
 
   driver.quit()
@@ -155,7 +169,13 @@ def get_total_time(watched_movies, release_dates):
   run_times_list = []
   total_minutes = 0
   for movie, date in zip(watched_movies, release_dates):
-    params = {
+    if date == 0:
+      params = {
+      "apikey": API_KEY,  
+      "t": movie, 
+    }
+    else:
+      params = {
       "apikey": API_KEY,  
       "t": movie,
       "y":  date    
@@ -164,7 +184,7 @@ def get_total_time(watched_movies, release_dates):
     if response.status_code == 200:  
       data = response.json()
       runtime = data.get("Runtime")
-      print(f" {movie} {date} Runtime  From API: {runtime}")
+      #print(f" {movie} {date} Runtime  From API: {runtime}")
       if runtime != "NA":
         if runtime == None:
           runtime = 0
