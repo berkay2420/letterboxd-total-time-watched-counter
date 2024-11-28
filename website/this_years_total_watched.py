@@ -21,9 +21,10 @@ BASE_URL = "http://www.omdbapi.com/"
 def get_movie_names(user_name):
 
   options = Options()
-  #options.add_argument("--headless")
+  options.add_argument("--headless")
   driver = webdriver.Chrome(options=options)
   watched_movies = []
+  release_dates = []
 
   driver.get(f"https://letterboxd.com/{user_name}/films/diary/")
   time.sleep(1)
@@ -48,6 +49,21 @@ def get_movie_names(user_name):
     for i in range(1,len(table) + 1):
       movie_name = get_movie_name(i)
       watched_movies.append(movie_name)
+  
+  def get_release_year(i):
+    element = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.XPATH, f'//*[@id="diary-table"]/tbody/tr[{i}]/td[3]/div'))
+    
+    )
+    date_html = element.get_attribute('outerHTML')
+    soup = BeautifulSoup(date_html, 'html.parser')
+    release_year = soup.find('div', class_='film-poster')['data-film-release-year']
+    return int(release_year)
+  
+  def append_dates(table):
+    for i in range(1,len(table) + 1):
+      year = get_release_year(i)
+      release_dates.append(year)
 
   def check_older_button():
     try:
@@ -89,6 +105,7 @@ def get_movie_names(user_name):
   movies_table = get_movies_table()
 
   append_movies(movies_table)
+  append_dates(movies_table)
   time.sleep(1)
 
   if check_page_numbers:
@@ -99,10 +116,11 @@ def get_movie_names(user_name):
         click_older_button_and_wait()
         new_movies_table = get_movies_table()
         append_movies(new_movies_table)
+        append_dates(movies_table)
         index += 1
 
   driver.quit()
-  return watched_movies
+  return watched_movies, release_dates
 
 
 
@@ -133,19 +151,20 @@ def get_runtimes_list(movie_list):
      
 
 
-def get_total_time(watched_movies):
+def get_total_time(watched_movies, release_dates):
   run_times_list = []
   total_minutes = 0
-  for movie in watched_movies:
+  for movie, date in zip(watched_movies, release_dates):
     params = {
       "apikey": API_KEY,  
-      "t": movie,   
+      "t": movie,
+      "y":  date    
     }
     response = requests.get(BASE_URL, params=params)
     if response.status_code == 200:  
       data = response.json()
       runtime = data.get("Runtime")
-      print(f" {movie}Runtime  From API: {runtime}")
+      print(f" {movie} {date} Runtime  From API: {runtime}")
       if runtime != "NA":
         if runtime == None:
           runtime = 0

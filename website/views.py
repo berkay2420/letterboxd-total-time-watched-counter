@@ -28,8 +28,8 @@ def main_page():
 @views.route('/total_watched_info', methods=['POST'])
 def info_page():
   user_name= request.form.get('user_name')
-  watched_movies = get_movie_names(user_name)
-  total_minutes, total_hours, total_minutes_by_hours, run_times_list, longest_runtime_index = get_total_time(watched_movies)
+  watched_movies, release_dates = get_movie_names(user_name)
+  total_minutes, total_hours, total_minutes_by_hours, run_times_list, longest_runtime_index = get_total_time(watched_movies, release_dates )
   average_runtime_for_movie = round(total_hours / len(run_times_list), 2)
   longest_movie = watched_movies[longest_runtime_index]
   #movie_list = zip(watched_movies, run_times_list)
