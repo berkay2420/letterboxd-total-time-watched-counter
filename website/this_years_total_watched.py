@@ -78,13 +78,15 @@ def get_movie_names(user_name, year):
     film_poster = soup.find('div', class_='film-poster')
     release_year = film_poster.get('data-film-release-year', None)
 
-    if release_year==None:
+    if release_year==None or release_year.strip() == '':
       release_year="0"
     return int(release_year)
   
   def append_dates(table):
     for i in range(1,len(table) + 1):
       year = get_release_year(i)
+      if year is None:
+        year=0
       release_dates.append(year)
 
   def check_older_button():

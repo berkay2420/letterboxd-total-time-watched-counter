@@ -25,6 +25,7 @@ def main_page():
 #                           )
 #                         )
 
+
 @views.route('/total_watched_info', methods=['POST'])
 def info_page():
   user_name= request.form.get('user_name')
@@ -51,4 +52,5 @@ def info_page():
                          average_runtime_for_movie=average_runtime_for_movie,
                          total_number_of_watched_movies=total_number_of_watched_movies,
                          year=year,
-                         longest_runtime=longest_runtime)
+                         longest_runtime=longest_runtime
+                         )
